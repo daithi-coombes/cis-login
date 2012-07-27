@@ -1,16 +1,22 @@
 
-<form id="cisocial-login">
+<!--[--errors--]-->
+<!--[--messages--]-->
+
+<form id="cisocial-login" method="post">
+	
+	<input type="hidden" name="_wpnonce" value="<!--[--login form nonce--]-->"/>
+	<input type="hidden" name="cis_login_action" value="login"/>
+	
 	<ul>
 		<li>
 			<input type="text" name="user" id="cisl-user"/><label for="cisl-user">Username</label>
 		</li>
 		<li>
-			<input type="text" name="pswd" id="cisl-pswd"/><label for="cisl-pswd">Username</label>
+			<input type="password" name="pswd" id="cisl-pswd"/><label for="cisl-pswd">Password</label>
 		</li>
 		<li>
-			<input type="submit" value="Login"/>
+			<input type="submit" name="github_login" value="Login with GitHub"/>
+			<input type="submit" name="wp_login" value="Login"/>
 		</li>
 	</ul>
 </form>
-
-<input type="button" onclick="cis_login.login_github()" value="Login with GitHub"/>

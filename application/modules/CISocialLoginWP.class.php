@@ -27,6 +27,9 @@ class CISocialLoginWP {
 		add_action('wp_head', array(&$this, 'head'));
 		add_action('init', array(&$this,'init'));
 		add_action('wp_init', array(&$this,'init'));
+		
+		if(@$_REQUEST['cis_login_action']=='login') 
+			add_action('init', array(&$this, 'login'));
 	}
 
 	/**
@@ -40,6 +43,9 @@ class CISocialLoginWP {
 	public function get_page() {
 
 		$this->html = file_get_contents(CISOCIAL_LOGIN_DIR . "/public_html/CISocialLoginWP.php");
+		$this->shortcodes['errors'] = cis_login_get_errors();
+		$this->shortcodes['login form nonce'] = wp_create_nonce("login form nonce");
+		$this->shortcodes['messages'] = cis_login_get_messages();
 		$this->set_shortcodes();
 
 		$this->load_scripts();
@@ -72,6 +78,24 @@ class CISocialLoginWP {
 		
 		$this->load_scripts();
 		$this->load_styles();
+	}
+	
+	public function login(){
+		
+		//security check
+		if(!wp_verify_nonce($_REQUEST['_wpnonce'], "login form nonce")){
+			cis_login_error("Invalid nonce");
+			return false;
+		}
+		
+		global $cis_login_client_github;
+		
+		//git hub login
+		if(@$_REQUEST['github_login'])
+			$cis_login_client_github->login();
+		//default wp login
+		else
+			cis_login_message ("Wordpress login");
 	}
 	
 	/**

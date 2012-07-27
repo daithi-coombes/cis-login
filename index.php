@@ -67,7 +67,7 @@ function cis_login_message($msg) {
 }
 
 /**
- * Builds the errors html div for the view file.
+ * Builds the errors html div for the view file. Loads necessary styles for div.
  * 
  * @global array $cis_login_error
  * @return mixed Returns html if errors found, or false if none.
@@ -81,11 +81,12 @@ function cis_login_get_errors(){
 	foreach($cis_login_error as $err)
 		$html .= "<li>{$err}</li>\n";
 
+	wp_enqueue_style('colors');
 	return $html .= "</ul>\n</div>\n";
 }
 
 /**
- * Builds the messages html for the view file.
+ * Builds the messages html for the view file. Loads necessary styles for div.
  * 
  * @global array $cis_login_message
  * @return mixed Returns html if messages found, or false if none.
@@ -100,6 +101,7 @@ function cis_login_get_messages() {
 	foreach ($cis_login_message as $msg)
 		$html .= "<li>{$msg}</li>\n";
 
+	wp_enqueue_style('colors');
 	return $html .= "</ul>\n</div>\n";
 }
 

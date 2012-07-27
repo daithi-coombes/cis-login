@@ -43,7 +43,14 @@ class CISocialLogin {
 		add_menu_page("CI Social Login", "Ci Social Login", "administrator", "cisocial-login", array(&$this, 'get_page'));
 	}
 	
-	private function get_settings(){
+	/**
+	 * Returns the options for this plugin.
+	 * 
+	 * Options taken from wp option "cis_login_settings".
+	 *
+	 * @return type 
+	 */
+	public function get_settings(){
 		return get_option("cis_login_settings");
 	}
 	

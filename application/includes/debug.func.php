@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package david-coombes
  */
@@ -11,25 +12,27 @@
  * @link http://www.david-coombes.com 
  * @copyright open 
  */
-if(!function_exists("ar_print")){
+if (!function_exists("ar_print")) {
+
 	function ar_print($ar) {
 
-	//vars  
-	$name = "";
-	$caller_info = array_shift(debug_backtrace());
-	$lines = file($caller_info['file']);
-	$line = $lines[$caller_info['line'] - 1];
+		//vars  
+		$name = "";
+		$caller_info = array_shift(debug_backtrace());
+		$lines = file($caller_info['file']);
+		$line = $lines[$caller_info['line'] - 1];
 
-	//search debug dump for var name  
-	if (preg_match('/ar_print\\s*\\(\$(\\w+)/', $line, $matches))
-		$name = $matches[1];
+		//search debug dump for var name  
+		if (preg_match('/ar_print\\s*\\(\$(\\w+)/', $line, $matches))
+			$name = $matches[1];
 
-	//print to stdout  
-	print "\n<pre>\n";
-	print "{$name}\t";
-	print_r($ar);
-	print "\n</pre>\n";
-}
+		//print to stdout  
+		print "\n<pre>\n";
+		print "{$name}\t";
+		print_r($ar);
+		print "\n</pre>\n";
+	}
+
 }
 
 /**
@@ -38,48 +41,86 @@ if(!function_exists("ar_print")){
  * @link http://www.david-coombes.com 
  * @copyright open 
  */
-if(!function_exists("debug_print")){
+if (!function_exists("debug_print")) {
+
 	function debug_print() {
 
-	print "<pre>\n";
-	debug_print_backtrace();
-	print "</pre>\n";
-}
+		print "<pre>\n";
+		debug_print_backtrace();
+		print "</pre>\n";
+	}
+
 }
 
 
-if(!function_exists("log_file")){
+if (!function_exists("log_file")) {
+
 	/**
 	 * Logs a string to a file
 	 *
 	 * @param string $str 
 	 */
-	function log_file($str, $path=false, $mode='a'){
-		
-		($path) ? $file="{$path}/log.txt\n" : $file="log.txt\n";
-		
+	function log_file($str, $path = false, $mode = 'a') {
+
+		//if array then turn to printable string (not serialized)
+		if (is_array($str))
+			$str = ar_to_string($str);
+
+		($path) ? $file = "{$path}/log.txt\n" : $file = "log.txt\n";
+
 		$fp = fopen($file, $mode);
 		fwrite($fp, "$str\n");
 		fclose($fp);
 	}
+
 }
 
-if(!function_exists("ar_to_string")){
-	function ar_to_string($ar,$tab=1){
-		
+if (!function_exists("ar_to_string")) {
+
+	/**
+	 * Converts an array to readable string and returns. Tries to mimic the
+	 * format of print_r including newline and tab chars.
+	 * 
+	 * @param array $ar The array to convert
+	 * @param integer $tab Default 1. The number of tabs for this line.
+	 * @return type string
+	 */
+	function ar_to_string($ar, $tab = 1) {
+
 		$str = "";
-		$tabls = "";
-		
-		for($x=0;$x<$tab;$x++)
+		$tabs = "";
+
+		for ($x = 0; $x < $tab; $x++)
 			$tabs .= "\t";
-		
-		foreach($ar as $key=>$val){
-			if(is_array($ar[$key]))
-				$str .= ar_to_string($ar, ($tab+1));
-			else $str = "{$tabs}{$key}\t=>\t{$val}\n";
+
+		foreach ($ar as $key => $val) {
+			if (is_array($ar[$key]))
+				$str .= ar_to_string($ar, ($tab + 1));
+			else
+				$str = "{$tabs}{$key}\t=>\t{$val}\n";
 		}
-			
+
 		return $str;
 	}
+
+}
+
+if (!function_exists("rand_md5")) {
+
+	/**
+	 * Generate a random string.
+	 *
+	 * @param integer $length Default 11. The length of the returned string.
+	 * @return string 
+	 */
+	function rand_md5($length=11) {
+		$max = ceil($length / 32);
+		$random = '';
+		for ($i = 0; $i < $max; $i++) {
+			$random .= md5(microtime(true) . mt_rand(10000, 90000));
+		}
+		return substr($random, 0, $length);
+	}
+
 }
 ?>
