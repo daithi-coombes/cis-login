@@ -68,7 +68,7 @@
 <h2>Classes:</h2>
 <dl>
 <dt><a href="../cis-login/CISocialLoginClientGitHub.html">CISocialLoginClientGitHub</a></dt>
-	<dd>The class file for CISocialLoginClientGitHub</dd>
+	<dd>The class file for CISocialLoginClientGitHub. Handles both basic and oauth  authentication. Tries to default to basic where possible.</dd>
 </dl>
 </div>
 
@@ -79,10 +79,10 @@
 	<a name="global$wpdb"></a>
 	<h3><i>wpdb</i> $wpdb</h3>
 	<div class="indent">
-	<p class="linenumber">[line 130]</p>
-	<p align="center"><strong>Logging in method used in iframe.
+	<p class="linenumber">[line 208]</p>
+	<p align="center"><strong>Makes a request for the user's github email. Needs an auth token set up
 </strong></p>
-<p>Redirect to wp-admin admin on success, error reports on failure.</p>
+<p>first. Oauth tokens are recieved from $this-&gt;oauth_callback and passed as  param. Method defaults to getting a basic auth token from  $this-&gt;api_get_basic_token(). If email matches one on wordpress account  method return true.</p>
 	<p><b>Default Value:</b></p>
 		</div>
 	<p class="top">[ <a href="#top">Top</a> ]</p>
@@ -93,7 +93,7 @@
 </div>
 	<div id="credit">
 		<hr>
-		Documentation generated on Mon, 23 Jul 2012 02:00:39 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
+		Documentation generated on Fri, 27 Jul 2012 18:50:45 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
 	</div>
 </div>
 </body>

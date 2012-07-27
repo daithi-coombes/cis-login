@@ -3,7 +3,8 @@
  * @package cis-login
  */
 /**
- * The class file for CISocialLoginClientGitHub
+ * The class file for CISocialLoginClientGitHub. Handles both basic and oauth
+ * authentication. Tries to default to basic where possible.
  *
  * @author daithi
  * @package cis-login
@@ -145,6 +146,7 @@ class CISocialLoginClientGitHub {
 		?><head><?php
 		wp_head();
 		?><body><?php
+		ar_print($this);
 		//print body
 		print $this->html;
 
@@ -154,16 +156,31 @@ class CISocialLoginClientGitHub {
 		die();
 	}
 
-	public function get_autorize_query(){
+	/**
+	 * Returns the html link for logging in used in the view file for the
+	 * CISocialLoginWP module.
+	 */
+	public function get_login_link(){
 		
-		global $wpdb;
+		//vars
 		$client_id = $this->get_client_id();
+		$link = "";
 		$state = rand_md5();
 		
-		if(!$client_id) return;
-		update_option("cis_login_state", $state);		
+		//if client_id then give link for oauth
+		if($client_id){
+			update_option("cis_login_state", $state);		
+			$link = "<a href=\"https://github.com/login/oauth/authorize?client_id=" . $this->get_client_id() . "&scope=user,public_repo,repo,delete_repo,gist&state={$state}\">";
+		}
+				
+		//else default to link for basic auth
+		else $link = "<a href=\"javascript:void(0)\" onclick=\"tb_show('GitHub Basic Auth','/wp-admin/admin-ajax.php?action=login_form_github&TB_iframe=true')\">";
 		
-		return "?client_id=" . $this->get_client_id() . "&scope=user,public_repo,repo,delete_repo,gist&state={$state}";
+		//return
+		return $link .= "
+			Login with GitHub
+			</a>
+			";
 	}
 	
 	/**
@@ -176,11 +193,12 @@ class CISocialLoginClientGitHub {
 	}
 
 	/**
-	 * Logging in method used in iframe.
-	 * 
-	 * Redirect to wp-admin admin on success, error reports on failure.
+	 * Makes a request for the user's github email. Needs an auth token set up
+	 * first. Oauth tokens are recieved from $this->oauth_callback and passed as
+	 * param. Method defaults to getting a basic auth token from
+	 * $this->api_get_basic_token(). If email matches one on wordpress account
+	 * method return true.
 	 *
-	 * @global CISocialLogin $cis_login
 	 * @global wpdb $wpdb
 	 * @return boolean 
 	 */
@@ -192,8 +210,8 @@ class CISocialLoginClientGitHub {
 		$this->github_user = @$_REQUEST['user'];
 		$this->github_pswd = @$_REQUEST['pswd'];
 
-		//if token has not been set then get basic auth
-		if(!$token) $this->api_get_basic_token();
+		//if !token, then get token from basic auth
+		if(!$token) $token = $this->api_get_basic_token();
 		
 		//get users email
 		curl_setopt($ch, CURLOPT_URL, "https://api.github.com/user/emails?access_token={$token}");
@@ -207,7 +225,7 @@ class CISocialLoginClientGitHub {
 			cis_login_error("error getting user email => {$msg}");
 			return false;
 		}
-
+		
 		//check emails against users
 		$emails = "'" . implode("','", $response) . "'";
 		$res = $wpdb->get_results("
@@ -215,7 +233,7 @@ class CISocialLoginClientGitHub {
 			FROM {$wpdb->users}
 			WHERE {$wpdb->users}.user_email IN ({$emails})
 			");
-		
+			
 		//if github email not in wp error report
 		if (!$res) {
 			cis_login_error("Please make sure your email account on wordpress and github match<br/>GitHub.com emails => {$emails}");
@@ -228,89 +246,35 @@ class CISocialLoginClientGitHub {
 	}
 
 	/**
-	 * Get an access token from the github api.
+	 * Get an access token from the github api for basic authentication.
 	 *
 	 * @return mixed Returns token on success, false on failure 
 	 */
 	private function api_get_basic_token() {
 
 		$ch = curl_init();
+		$params = array(
+			'scope' => 'user,public_repo,repo,delete_repo,gist',
+			'note' => 'this_is_the_note'
+		);
+		$post_str = json_encode($params);
+		$url = "https://api.github.com/authorizations"; //?scope=user&note=this_is_the_note";
+
+		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		//curl_setopt($ch, CURLOPT_USERPWD, "{$this->github_user}:{$this->github_pswd}");
-		
-		//vars
-		switch ($type) {
-			
-			//basic auth
-			case "basic":
-				$params = array(
-					'scope' => 'user,public_repo,repo,delete_repo,gist',
-					'note' => 'this_is_the_note'
-				);
-				$post_str = json_encode($params);
-				$url = "https://api.github.com/authorizations"; //?scope=user&note=this_is_the_note";
+		curl_setopt($ch, CURLOPT_USERPWD, "{$this->github_user}:{$this->github_pswd}");
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_str);
+		$response = json_decode(curl_exec($ch));
 
-				curl_setopt($ch, CURLOPT_URL, $url);
-				curl_setopt($ch, CURLOPT_POST, true);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_str);
-				$response = json_decode(curl_exec($ch));
-
-				if (@$response->message || !$response->token) {
-					cis_login_error("no token returned => {$response->message}");
-					return false;
-				}
-				$token = $response->token;
-				break;
-
-			/**
-			 * oauth
-			 * @deprecated
-			 *
-			case "oauth":
-				break;
-			
-				$url = "https://github.com/login/oauth/authorize";
-				$params = array(
-					'client_id' => $this->get_client_id(),
-					'scope' => 'user,public_repo,repo,delete_repo,gist',
-					'state' => $state
-				);
-				$url = "{$url}?" . http_build_query($params);
-				$query = "?client_id=" . $this->get_client_id() . "&scope=user,public_repo,repo,delete_repo,gist&state=$state";
-				header("Location: {$url}{$query}");
-				die();
-				
-				/**
-				 *@deprecated 
-				 *
-				curl_setopt($ch, CURLOPT_URL, $url . $query);
-				//curl_setopt($ch, CURLOPT_POST, true);
-				//curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-				curl_setopt($ch, CURLOPT_USERPWD, "{$this->github_user}:{$this->github_pswd}");
-				$response = curl_exec($ch);
-				
-				update_option("cis_login_state", $state);
-				print $response;
-				 * 
-				 *
-				break;
-			 * 
-			 */
-
-			default:
-				break;
+		if (@$response->message || !$response->token) {
+			cis_login_error("no token returned => {$response->message}");
+			return false;
 		}
-
+		$token = $response->token;
 
 		return $token;
-	}
-
-	/**
-	 *@deprecated 
-	 */
-	private function get_oauth_token(){
-		
 	}
 	
 	/**

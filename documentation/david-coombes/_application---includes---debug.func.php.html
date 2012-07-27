@@ -70,7 +70,7 @@
 	<div class="indent">
 		<code>void ar_print(
 array $ar)</code>
-		<p class="linenumber">[line 15]</p>
+		<p class="linenumber">[line 17]</p>
 		<p align="center"><strong>Debug function. Prints an array wrapped inside &amp;lt;pre&gt; tags for easy viewing in  html browser. Will print the array variable name as well, this is taken from  debug dump using preg_match.
 </strong></p>
 <h4>Tags:</h4>
@@ -92,22 +92,28 @@ array $ar)</code>
 	<a name="functionar_to_string"></a>
 	<h3>ar_to_string</h3>
 	<div class="indent">
-		<code>void ar_to_string(
- $ar, [ $tab = 1])</code>
-		<p class="linenumber">[line 68]</p>
-				
+		<code>type ar_to_string(
+array $ar, [integer $tab = 1])</code>
+		<p class="linenumber">[line 88]</p>
+		<p align="center"><strong>Converts an array to readable string and returns. Tries to mimic the  format of print_r including newline and tab chars.
+</strong></p>
+<h4>Tags:</h4>
+<ul>
+	<li><b>return</b> - string</li>
+</ul>
+		
 		<h4>Parameters</h4>
 		<ul>
 					<li>
-			<span class="type"></span>
+			<span class="type">array</span>
 			<b>$ar</b> 
 			- 
-			</li>
+			The array to convert</li>
 					<li>
-			<span class="type"></span>
+			<span class="type">integer</span>
 			<b>$tab</b> 
 			- 
-			</li>
+			Default 1. The number of tabs for this line.</li>
 				</ul>
 	</div>
 	<p class="top">[ <a href="#top">Top</a> ]</p>
@@ -116,7 +122,7 @@ array $ar)</code>
 	<div class="indent">
 		<code>void debug_print(
 )</code>
-		<p class="linenumber">[line 42]</p>
+		<p class="linenumber">[line 46]</p>
 		<p align="center"><strong>Debug function. Prints debug_print_backtrace() between two pre tags.
 </strong></p>
 <h4>Tags:</h4>
@@ -135,7 +141,7 @@ array $ar)</code>
 	<div class="indent">
 		<code>void log_file(
 string $str, [ $path = false], [ $mode = &#039;a&#039;])</code>
-		<p class="linenumber">[line 57]</p>
+		<p class="linenumber">[line 63]</p>
 		<p align="center"><strong>Logs a string to a file
 </strong></p>
 		
@@ -159,10 +165,29 @@ string $str, [ $path = false], [ $mode = &#039;a&#039;])</code>
 				</ul>
 	</div>
 	<p class="top">[ <a href="#top">Top</a> ]</p>
+	<a name="functionrand_md5"></a>
+	<h3>rand_md5</h3>
+	<div class="indent">
+		<code>string rand_md5(
+[integer $length = 11])</code>
+		<p class="linenumber">[line 116]</p>
+		<p align="center"><strong>Generate a random string.
+</strong></p>
+		
+		<h4>Parameters</h4>
+		<ul>
+					<li>
+			<span class="type">integer</span>
+			<b>$length</b> 
+			- 
+			Default 11. The length of the returned string.</li>
+				</ul>
+	</div>
+	<p class="top">[ <a href="#top">Top</a> ]</p>
 </div>
 	<div id="credit">
 		<hr>
-		Documentation generated on Mon, 23 Jul 2012 02:00:39 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
+		Documentation generated on Fri, 27 Jul 2012 18:50:45 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
 	</div>
 </div>
 </body>

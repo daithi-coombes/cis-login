@@ -47,7 +47,7 @@ class CISocialLoginWP {
 		$this->html = file_get_contents(CISOCIAL_LOGIN_DIR . "/public_html/CISocialLoginWP.php");
 		$this->shortcodes['errors'] = cis_login_get_errors();
 		$this->shortcodes['login form nonce'] = wp_create_nonce("login form nonce");
-		$this->shortcodes['github authorise query'] = $cis_login_client_github->get_autorize_query();
+		$this->shortcodes['git hub login link'] = $cis_login_client_github->get_login_link();
 		$this->shortcodes['messages'] = cis_login_get_messages();
 		$this->set_shortcodes();
 
@@ -58,7 +58,8 @@ class CISocialLoginWP {
 	}
 	
 	/**
-	 * Print javascript globals to &lt;head> tags on frontend.	 */
+	 * Print javascript globals to &lt;head> tags on frontend.
+	 */
 	public function head(){
 		
 		$ajaxurl = admin_url('admin-ajax.php');
@@ -83,6 +84,13 @@ class CISocialLoginWP {
 		$this->load_styles();
 	}
 	
+	/**
+	 * login into wordpress normaly
+	 *
+	 * @todo
+	 * @global CISocialLoginClientGithub $cis_login_client_github
+	 * @return boolean 
+	 */
 	public function login(){
 		
 		//security check
@@ -91,15 +99,17 @@ class CISocialLoginWP {
 			return false;
 		}
 		
-		//cis_login objects
-		global $cis_login_client_github;
+		cis_login_message ("Wordpress login");
 		
-		//git hub login
+		/**
+		 * @deprecated
+		 * git hub login
+		 *
+		global $cis_login_client_github;
 		if(@$_REQUEST['github_login'])
 			$cis_login_client_github->login();
 		//default wp login
-		else
-			cis_login_message ("Wordpress login");
+		else*/
 	}
 	
 	/**

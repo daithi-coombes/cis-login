@@ -63,11 +63,11 @@
 	
 
 <div class="leftcol">
-	<h3><a href="#class_details">Class Overview</a> <span class="smalllinenumber">[line 11]</span></h3>
+	<h3><a href="#class_details">Class Overview</a> <span class="smalllinenumber">[line 12]</span></h3>
 	<div id="classTree"><pre></pre>
 </div>
 	<div class="small">
-	<p>The class file for CISocialLoginClientGitHub</p>
+	<p>The class file for CISocialLoginClientGitHub. Handles both basic and oauth  authentication. Tries to default to basic where possible.</p>
 		<h4>Author(s):</h4>
 	<ul>
 								<li>daithi</li>
@@ -94,12 +94,13 @@
 	<h3><a href="#class_methods">Methods</a></h3>
 	<ul class="small">
 				<li><a href="../cis-login/CISocialLoginClientGitHub.html#method__construct">__construct</a></li>
-				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodcallback">callback</a></li>
 				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodget_client_id">get_client_id</a></li>
 				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodget_client_secret">get_client_secret</a></li>
+				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodget_login_link">get_login_link</a></li>
 				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodget_page">get_page</a></li>
 				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodinit">init</a></li>
 				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodlogin">login</a></li>
+				<li><a href="../cis-login/CISocialLoginClientGitHub.html#methodoauth_callback">oauth_callback</a></li>
 			</ul>
 </div>
 
@@ -121,7 +122,7 @@
 
 	<a name="class_details"></a>
 	<h2>Class Details</h2>
-	<p align="center"><strong>The class file for CISocialLoginClientGitHub
+	<p align="center"><strong>The class file for CISocialLoginClientGitHub. Handles both basic and oauth  authentication. Tries to default to basic where possible.
 </strong></p>
 <h4>Tags:</h4>
 <ul>
@@ -146,31 +147,8 @@
 )</code>
 		</p>
 	
-		<p class="linenumber">[line 34]</p>
+		<p class="linenumber">[line 28]</p>
 		<p align="center"><strong>constructor
-</strong></p>
-<h4>Tags:</h4>
-<ul>
-	<li><b>access</b> - public</li>
-</ul>
-		
-	
-	<h4>Parameters:</h4>
-	<ul>
-		</ul>
-	</div>
-	<p class="top">[ <a href="#top">Top</a> ]</p>
-	<a name="methodcallback"></a>
-	<p></p>
-	<h3>callback</h3>
-	<div class="indent">
-		<p>
-		<code>void callback(
-)</code>
-		</p>
-	
-		<p class="linenumber">[line 48]</p>
-		<p align="center"><strong>Handles the callback for the GitHub OAuth api v3.
 </strong></p>
 <h4>Tags:</h4>
 <ul>
@@ -188,15 +166,16 @@
 	<h3>get_client_id</h3>
 	<div class="indent">
 		<p>
-		<code>string get_client_id(
+		<code>mixed get_client_id(
 )</code>
 		</p>
 	
-		<p class="linenumber">[line 58]</p>
+		<p class="linenumber">[line 99]</p>
 		<p align="center"><strong>Get the github client id.
 </strong></p>
 <h4>Tags:</h4>
 <ul>
+	<li><b>return</b> - Returns client id on success or false if not found.</li>
 	<li><b>access</b> - public</li>
 </ul>
 		
@@ -211,12 +190,36 @@
 	<h3>get_client_secret</h3>
 	<div class="indent">
 		<p>
-		<code>string get_client_secret(
+		<code>mixed get_client_secret(
 )</code>
 		</p>
 	
-		<p class="linenumber">[line 66]</p>
+		<p class="linenumber">[line 115]</p>
 		<p align="center"><strong>Get the github client secret.
+</strong></p>
+<h4>Tags:</h4>
+<ul>
+	<li><b>return</b> - Returns the client secret on success or false if not found.</li>
+	<li><b>access</b> - public</li>
+</ul>
+		
+	
+	<h4>Parameters:</h4>
+	<ul>
+		</ul>
+	</div>
+	<p class="top">[ <a href="#top">Top</a> ]</p>
+	<a name="methodget_login_link"></a>
+	<p></p>
+	<h3>get_login_link</h3>
+	<div class="indent">
+		<p>
+		<code>void get_login_link(
+)</code>
+		</p>
+	
+		<p class="linenumber">[line 163]</p>
+		<p align="center"><strong>Returns the html link for logging in used in the view file for the  CISocialLoginWP module.
 </strong></p>
 <h4>Tags:</h4>
 <ul>
@@ -238,7 +241,7 @@
 )</code>
 		</p>
 	
-		<p class="linenumber">[line 78]</p>
+		<p class="linenumber">[line 134]</p>
 		<p align="center"><strong>Prints the view html.
 </strong></p>
 <p>Loads the html then sets shortcodes ( @see CISocialLoginClientGItHub::set_shortcodes() )  then loads scripts (@see CISocialLoginClientGItHub::load_scripts() ) and styles  (@see CISocialLoginClientGItHub::load_styles() ) then prints html</p><h4>Tags:</h4>
@@ -261,7 +264,7 @@
 )</code>
 		</p>
 	
-		<p class="linenumber">[line 105]</p>
+		<p class="linenumber">[line 189]</p>
 		<p align="center"><strong>Method calls for just after wp core loads.
 </strong></p>
 <h4>Tags:</h4>
@@ -281,11 +284,40 @@
 	<div class="indent">
 		<p>
 		<code>void login(
+[
+$token = false])</code>
+		</p>
+	
+		<p class="linenumber">[line 205]</p>
+		<h4>Tags:</h4>
+<ul>
+	<li><b>access</b> - public</li>
+</ul>
+		
+	
+	<h4>Parameters:</h4>
+	<ul>
+			<li>
+		<span class="type"></span>
+		<b>$token</b> 
+		- 
+		</li>
+		</ul>
+	</div>
+	<p class="top">[ <a href="#top">Top</a> ]</p>
+	<a name="methodoauth_callback"></a>
+	<p></p>
+	<h3>oauth_callback</h3>
+	<div class="indent">
+		<p>
+		<code>void oauth_callback(
 )</code>
 		</p>
 	
-		<p class="linenumber">[line 120]</p>
-		<h4>Tags:</h4>
+		<p class="linenumber">[line 46]</p>
+		<p align="center"><strong>Handles the callback for the GitHub OAuth api v3.
+</strong></p>
+<h4>Tags:</h4>
 <ul>
 	<li><b>access</b> - public</li>
 </ul>
@@ -303,7 +335,7 @@
 	</div>
 	<div id="credit">
 		<hr>
-		Documentation generated on Mon, 23 Jul 2012 02:00:39 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
+		Documentation generated on Fri, 27 Jul 2012 18:50:45 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
 	</div>
 </div>
 </body>

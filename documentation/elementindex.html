@@ -39,9 +39,12 @@
 	<a href="elementindex.html#g">g</a>
 	<a href="elementindex.html#h">h</a>
 	<a href="elementindex.html#i">i</a>
-	<a href="elementindex.html#"></a>
+	<a href="elementindex.html#l">l</a>
+	<a href="elementindex.html#o">o</a>
+	<a href="elementindex.html#r">r</a>
 	<a href="elementindex.html#s">s</a>
 	<a href="elementindex.html#w">w</a>
+	<a href="elementindex.html#_">_</a>
 
 	<a name="a"></a>
 	<a href="elementindex.html#top">top</a><br>
@@ -53,7 +56,7 @@
 							<dt>ar_print</dt>
 				<dd>in file debug.func.php, function <a href="david-coombes/_application---includes---debug.func.php.html#functionar_print">ar_print()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Debug function. Prints an array wrapped inside &amp;lt;pre&gt; tags for easy viewing in  html browser. Will print the array variable name as well, this is taken from  debug dump using preg_match.</dd>
 							<dt>ar_to_string</dt>
-				<dd>in file debug.func.php, function <a href="david-coombes/_application---includes---debug.func.php.html#functionar_to_string">ar_to_string()</a></dd>
+				<dd>in file debug.func.php, function <a href="david-coombes/_application---includes---debug.func.php.html#functionar_to_string">ar_to_string()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Converts an array to readable string and returns. Tries to mimic the  format of print_r including newline and tab chars.</dd>
 					</dl>
 	</div>
 	<a name="c"></a>
@@ -67,12 +70,10 @@
 				<dd>procedural page <a href="cis-login/_application---modules---CISocialLoginClientGitHub.class.php.html">CISocialLoginClientGitHub.class.php</a></dd>
 							<dt>CISocialLoginWP.class.php</dt>
 				<dd>procedural page <a href="cis-login/_application---modules---CISocialLoginWP.class.php.html">CISocialLoginWP.class.php</a></dd>
-							<dt>callback</dt>
-				<dd>in file CISocialLoginClientGitHub.class.php, method <a href="cis-login/CISocialLoginClientGitHub.html#methodcallback">CISocialLoginClientGitHub::callback()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Handles the callback for the GitHub OAuth api v3.</dd>
 							<dt>CISocialLogin</dt>
 				<dd>in file CISocialLogin.class.php, class <a href="cis-login/CISocialLogin.html">CISocialLogin</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Description of CISocialLogin</dd>
 							<dt>CISocialLoginClientGitHub</dt>
-				<dd>in file CISocialLoginClientGitHub.class.php, class <a href="cis-login/CISocialLoginClientGitHub.html">CISocialLoginClientGitHub</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The class file for CISocialLoginClientGitHub</dd>
+				<dd>in file CISocialLoginClientGitHub.class.php, class <a href="cis-login/CISocialLoginClientGitHub.html">CISocialLoginClientGitHub</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The class file for CISocialLoginClientGitHub. Handles both basic and oauth  authentication. Tries to default to basic where possible.</dd>
 							<dt>CISocialLoginWP</dt>
 				<dd>in file CISocialLoginWP.class.php, class <a href="cis-login/CISocialLoginWP.html">CISocialLoginWP</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Class for the front end login page and actions.</dd>
 							<dt>CISOCIAL_LOGIN_DIR</dt>
@@ -82,9 +83,9 @@
 							<dt>cis_login_error</dt>
 				<dd>in file index.php, function <a href="cis-login/_index.php.html#functioncis_login_error">cis_login_error()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Add an error to the error que.</dd>
 							<dt>cis_login_get_errors</dt>
-				<dd>in file index.php, function <a href="cis-login/_index.php.html#functioncis_login_get_errors">cis_login_get_errors()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Builds the errors html div for the view file.</dd>
+				<dd>in file index.php, function <a href="cis-login/_index.php.html#functioncis_login_get_errors">cis_login_get_errors()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Builds the errors html div for the view file. Loads necessary styles for div.</dd>
 							<dt>cis_login_get_messages</dt>
-				<dd>in file index.php, function <a href="cis-login/_index.php.html#functioncis_login_get_messages">cis_login_get_messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Builds the messages html for the view file.</dd>
+				<dd>in file index.php, function <a href="cis-login/_index.php.html#functioncis_login_get_messages">cis_login_get_messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Builds the messages html for the view file. Loads necessary styles for div.</dd>
 							<dt>cis_login_message</dt>
 				<dd>in file index.php, function <a href="cis-login/_index.php.html#functioncis_login_message">cis_login_message()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Add a message to the message que.</dd>
 							<dt>CISocialLogin.php</dt>
@@ -115,12 +116,16 @@
 				<dd>in file CISocialLoginClientGitHub.class.php, method <a href="cis-login/CISocialLoginClientGitHub.html#methodget_client_id">CISocialLoginClientGitHub::get_client_id()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get the github client id.</dd>
 							<dt>get_client_secret</dt>
 				<dd>in file CISocialLoginClientGitHub.class.php, method <a href="cis-login/CISocialLoginClientGitHub.html#methodget_client_secret">CISocialLoginClientGitHub::get_client_secret()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get the github client secret.</dd>
-							<dt>get_page</dt>
-				<dd>in file CISocialLoginWP.class.php, method <a href="cis-login/CISocialLoginWP.html#methodget_page">CISocialLoginWP::get_page()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Prints the view html.</dd>
+							<dt>get_login_link</dt>
+				<dd>in file CISocialLoginClientGitHub.class.php, method <a href="cis-login/CISocialLoginClientGitHub.html#methodget_login_link">CISocialLoginClientGitHub::get_login_link()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the html link for logging in used in the view file for the  CISocialLoginWP module.</dd>
 							<dt>get_page</dt>
 				<dd>in file CISocialLoginClientGitHub.class.php, method <a href="cis-login/CISocialLoginClientGitHub.html#methodget_page">CISocialLoginClientGitHub::get_page()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Prints the view html.</dd>
 							<dt>get_page</dt>
 				<dd>in file CISocialLogin.class.php, method <a href="cis-login/CISocialLogin.html#methodget_page">CISocialLogin::get_page()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Prints the view html.</dd>
+							<dt>get_page</dt>
+				<dd>in file CISocialLoginWP.class.php, method <a href="cis-login/CISocialLoginWP.html#methodget_page">CISocialLoginWP::get_page()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Prints the view html.</dd>
+							<dt>get_settings</dt>
+				<dd>in file CISocialLogin.class.php, method <a href="cis-login/CISocialLogin.html#methodget_settings">CISocialLogin::get_settings()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the options for this plugin.</dd>
 					</dl>
 	</div>
 	<a name="h"></a>
@@ -152,8 +157,28 @@
 		<dl class="lettercontents">
 							<dt>login</dt>
 				<dd>in file CISocialLoginClientGitHub.class.php, method <a href="cis-login/CISocialLoginClientGitHub.html#methodlogin">CISocialLoginClientGitHub::login()</a></dd>
+							<dt>login</dt>
+				<dd>in file CISocialLoginWP.class.php, method <a href="cis-login/CISocialLoginWP.html#methodlogin">CISocialLoginWP::login()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;login into wordpress normaly</dd>
 							<dt>log_file</dt>
 				<dd>in file debug.func.php, function <a href="david-coombes/_application---includes---debug.func.php.html#functionlog_file">log_file()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Logs a string to a file</dd>
+					</dl>
+	</div>
+	<a name="o"></a>
+	<a href="elementindex.html#top">top</a><br>
+	<div>
+		<h2>o</h2>
+		<dl class="lettercontents">
+							<dt>oauth_callback</dt>
+				<dd>in file CISocialLoginClientGitHub.class.php, method <a href="cis-login/CISocialLoginClientGitHub.html#methodoauth_callback">CISocialLoginClientGitHub::oauth_callback()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Handles the callback for the GitHub OAuth api v3.</dd>
+					</dl>
+	</div>
+	<a name="r"></a>
+	<a href="elementindex.html#top">top</a><br>
+	<div>
+		<h2>r</h2>
+		<dl class="lettercontents">
+							<dt>rand_md5</dt>
+				<dd>in file debug.func.php, function <a href="david-coombes/_application---includes---debug.func.php.html#functionrand_md5">rand_md5()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Generate a random string.</dd>
 					</dl>
 	</div>
 	<a name="s"></a>
@@ -173,7 +198,7 @@
 		<h2>w</h2>
 		<dl class="lettercontents">
 							<dt>$wpdb</dt>
-				<dd>in file CISocialLoginClientGitHub.class.php, global variable <a href="cis-login/_application---modules---CISocialLoginClientGitHub.class.php.html#global$wpdb">$wpdb</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Logging in method used in iframe.</dd>
+				<dd>in file CISocialLoginClientGitHub.class.php, global variable <a href="cis-login/_application---modules---CISocialLoginClientGitHub.class.php.html#global$wpdb">$wpdb</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Makes a request for the user's github email. Needs an auth token set up</dd>
 					</dl>
 	</div>
 	<a name="_"></a>
@@ -191,7 +216,7 @@
 	</div>
 	<div id="credit">
 		<hr>
-		Documentation generated on Mon, 23 Jul 2012 02:00:39 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
+		Documentation generated on Fri, 27 Jul 2012 18:50:45 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
 	</div>
 </div>
 </body>

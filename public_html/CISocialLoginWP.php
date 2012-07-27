@@ -19,4 +19,5 @@
 		</li>
 	</ul>
 </form>
-<a href="https://github.com/login/oauth/authorize<!--[--github authorise query--]-->">Login with GitHub</a>
+
+<!--[--git hub login link--]-->
