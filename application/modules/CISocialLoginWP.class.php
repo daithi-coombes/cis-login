@@ -42,9 +42,12 @@ class CISocialLoginWP {
 	 */
 	public function get_page() {
 
+		global $cis_login_client_github;
+		
 		$this->html = file_get_contents(CISOCIAL_LOGIN_DIR . "/public_html/CISocialLoginWP.php");
 		$this->shortcodes['errors'] = cis_login_get_errors();
 		$this->shortcodes['login form nonce'] = wp_create_nonce("login form nonce");
+		$this->shortcodes['github authorise query'] = $cis_login_client_github->get_autorize_query();
 		$this->shortcodes['messages'] = cis_login_get_messages();
 		$this->set_shortcodes();
 
@@ -88,6 +91,7 @@ class CISocialLoginWP {
 			return false;
 		}
 		
+		//cis_login objects
 		global $cis_login_client_github;
 		
 		//git hub login

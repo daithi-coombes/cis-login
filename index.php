@@ -36,8 +36,7 @@ $cis_login_client_github = new CISocialLoginClientGItHub();
 
 //ajax calls
 add_action('wp_ajax_nopriv_login_form_github', array($cis_login_client_github, 'get_page'));
-add_action('wp_ajax_nopriv_github_callback', array(&$cis_login_client_github, 'callback'));
-add_action('wp_ajax_github_callback', array(&$cis_login_client_github, 'callback')); //for debuggin, no need in final release
+add_action('wp_ajax_nopriv_github_callback', array(&$cis_login_client_github, 'oauth_callback'));
 add_action('wp_ajax_login_form_github', array($cis_login_client_github, 'get_page'));
 
 //actions

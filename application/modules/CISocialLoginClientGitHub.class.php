@@ -12,21 +12,14 @@ class CISocialLoginClientGitHub {
 
 	/** @var resource phpCurl resource for github api calls */
 	private $ch;
-
 	/** @var string Github username */
 	private $github_user;
-
 	/** @var string Github password */
 	private $github_pswd;
-
 	/** @var string Holds the html from the view file for parsing */
 	private $html;
-
 	/** @var array An array of shortcode=>value pairs for the view file */
 	private $shortcodes;
-
-	/** @var string Github user */
-	private $wp_user;
 
 	/**
 	 * constructor
@@ -40,21 +33,61 @@ class CISocialLoginClientGitHub {
 		if ($action)
 			if (method_exists($this, $action))
 				add_action('init', array(&$this, $action));
-			
-		$this->get_client_id();
+		
+		if(@$_REQUEST['authenticity_token'] && $_REQUEST['state'])
+			if(get_option("cis_login_state", $_REQUEST['state']))
+				$this->get_oauth_token();
 	}
 
 	/**
 	 * Handles the callback for the GitHub OAuth api v3.
 	 */
-	public function callback() {
-
-		log_file(array(
-			'value' => 1,
-			'value' => 2
-		), dirname(__FILE__));
+	public function oauth_callback() {
 		
-		die();
+		//vars
+		$ch = curl_init();
+		$state = get_option("cis_login_state");
+		$params = array(
+			'client_id' => $this->get_client_id(),
+			'client_secret' => $this->get_client_secret(),
+			'code' => $_REQUEST['code'],
+			'state' => $state
+		);
+		
+		//check state (defined in $this->get_authorize_query())
+		if($state!=$_REQUEST['state'])
+			die("<h1>invalid state</h1>");
+		
+		//get access token
+		curl_setopt($ch, CURLOPT_URL, "https://github.com/login/oauth/access_token");
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+		$response = curl_exec($ch);
+		$res = array();
+		parse_str($response, $res);
+		
+		if(!$res['access_token']){
+			cis_login_error("Error signing into GitHub");
+			cis_login_error("{$res['message']}");
+		}
+		
+		//else login
+		$token = $res['access_token'];
+		if(!$this->login( $token )){
+			cis_login_error("<h1>error getting details from GitHub");
+			cis_login_get_errors();
+			die();
+		}
+		
+		//print script to redirect to wp-admin
+		print "
+			<script type=\"text/javascript\">
+				window.parent.location = '/wp-admin';
+			</script>
+			";
+		return true;
 	}
 
 	/**
@@ -121,6 +154,18 @@ class CISocialLoginClientGitHub {
 		die();
 	}
 
+	public function get_autorize_query(){
+		
+		global $wpdb;
+		$client_id = $this->get_client_id();
+		$state = rand_md5();
+		
+		if(!$client_id) return;
+		update_option("cis_login_state", $state);		
+		
+		return "?client_id=" . $this->get_client_id() . "&scope=user,public_repo,repo,delete_repo,gist&state={$state}";
+	}
+	
 	/**
 	 * Method calls for just after wp core loads.
 	 */
@@ -139,40 +184,24 @@ class CISocialLoginClientGitHub {
 	 * @global wpdb $wpdb
 	 * @return boolean 
 	 */
-	public function login() {
+	public function login( $token=false ) {
 
-		/**
-		 * check nonce
-		 * @deprecated
-		 *
-		if (!wp_verify_nonce($_REQUEST['_wpnonce'], "github login nonce")) {
-			cis_login_error("Invalid nonce");
-			//return false;
-		}
-		 * 
-		 */
-		
 		//vars
-		global $cis_login;
 		global $wpdb;
 		$ch = curl_init();
-		$this->github_user = $_REQUEST['user'];
-		$this->github_pswd = $_REQUEST['pswd'];
+		$this->github_user = @$_REQUEST['user'];
+		$this->github_pswd = @$_REQUEST['pswd'];
 
-		//get token oauth?
-		if($this->get_client_id() && $this->get_client_secret())
-			$token = $this->api_get_token('oauth');
-		//or basic auth?
-		else
-			$token = $this->api_get_token();
-
+		//if token has not been set then get basic auth
+		if(!$token) $this->api_get_basic_token();
+		
 		//get users email
 		curl_setopt($ch, CURLOPT_URL, "https://api.github.com/user/emails?access_token={$token}");
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, "{$this->github_user}:{$this->github_pswd}");
+		if($this->github_pswd && $this->github_user)
+			curl_setopt($ch, CURLOPT_USERPWD, "{$this->github_user}:{$this->github_pswd}");
 		$response = json_decode(curl_exec($ch));
-		$headers = curl_getinfo($ch);
 		if (@$response->message || @$response['message']) {
 			($response->message) ? $msg = $response->message : $msg = $response['message'];
 			cis_login_error("error getting user email => {$msg}");
@@ -186,32 +215,24 @@ class CISocialLoginClientGitHub {
 			FROM {$wpdb->users}
 			WHERE {$wpdb->users}.user_email IN ({$emails})
 			");
-
+		
 		//if github email not in wp error report
 		if (!$res) {
 			cis_login_error("Please make sure your email account on wordpress and github match<br/>GitHub.com emails => {$emails}");
 			return false;
 		}
-		return;
-		//log user in
+		
 		wp_set_auth_cookie($res[0]->ID);
 		
-		//print script to redirect to wp-admin
-		$this->shortcodes['logged in script'] = "
-			<script type=\"text/javascript\">
-				window.parent.location = '/wp-admin';
-			</script>
-			";
 		return true;
 	}
 
 	/**
 	 * Get an access token from the github api.
 	 *
-	 * @param string $type Default basic. Type of auth basic|oauth
 	 * @return mixed Returns token on success, false on failure 
 	 */
-	private function api_get_token($type='basic') {
+	private function api_get_basic_token() {
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -242,39 +263,40 @@ class CISocialLoginClientGitHub {
 				$token = $response->token;
 				break;
 
-			//oauth
+			/**
+			 * oauth
+			 * @deprecated
+			 *
 			case "oauth":
-				
-				//ar_print($_SERVER);
-				//ar_print($_POST);
-				
+				break;
+			
 				$url = "https://github.com/login/oauth/authorize";
-				$state = rand_md5();
 				$params = array(
 					'client_id' => $this->get_client_id(),
 					'scope' => 'user,public_repo,repo,delete_repo,gist',
-					'redirect_uri' => 'http://cityindex.david-coombes.com/?page_id=5',
 					'state' => $state
 				);
 				$url = "{$url}?" . http_build_query($params);
 				$query = "?client_id=" . $this->get_client_id() . "&scope=user,public_repo,repo,delete_repo,gist&state=$state";
+				header("Location: {$url}{$query}");
+				die();
 				
+				/**
+				 *@deprecated 
+				 *
 				curl_setopt($ch, CURLOPT_URL, $url . $query);
 				//curl_setopt($ch, CURLOPT_POST, true);
 				//curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 				curl_setopt($ch, CURLOPT_USERPWD, "{$this->github_user}:{$this->github_pswd}");
 				$response = curl_exec($ch);
 				
+				update_option("cis_login_state", $state);
 				print $response;
-				/*
-				ar_print("sending");
-				ar_print($params);
-				ar_print("to => {$url}");
-				
-				ar_print($response);
-				*/
-				die();
+				 * 
+				 *
 				break;
+			 * 
+			 */
 
 			default:
 				break;
@@ -284,6 +306,13 @@ class CISocialLoginClientGitHub {
 		return $token;
 	}
 
+	/**
+	 *@deprecated 
+	 */
+	private function get_oauth_token(){
+		
+	}
+	
 	/**
 	 * Loads javascript files
 	 * 

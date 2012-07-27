@@ -15,8 +15,8 @@
 			<input type="password" name="pswd" id="cisl-pswd"/><label for="cisl-pswd">Password</label>
 		</li>
 		<li>
-			<input type="submit" name="github_login" value="Login with GitHub"/>
 			<input type="submit" name="wp_login" value="Login"/>
 		</li>
 	</ul>
 </form>
+<a href="https://github.com/login/oauth/authorize<!--[--github authorise query--]-->">Login with GitHub</a>
