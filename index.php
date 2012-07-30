@@ -39,8 +39,11 @@ add_action('wp_ajax_nopriv_login_form_github', array($cis_login_client_github, '
 add_action('wp_ajax_nopriv_github_callback', array(&$cis_login_client_github, 'oauth_callback'));
 add_action('wp_ajax_login_form_github', array($cis_login_client_github, 'get_page'));
 
-//actions
+//actions and filters
 add_action('admin_menu', array(&$cis_login, 'admin_menu'));
+add_filter('login_url', array($cis_login,'set_wp_login_url'), 10, 2);
+add_filter('login_redirect', array($cis_login, 'set_wp_login_redirect'), 10, 3);
+add_filter('logout_url', array($cis_login,'set_wp_logout_url'), 10, 1);
 
 //shortcodes
 add_shortcode("CI Social Login", array(&$cis_login_wp, 'get_page'));

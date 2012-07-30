@@ -9,9 +9,23 @@
 	
 	<input type="hidden" name="_wpnonce" value="<!--[--settings form nonce--]-->"/>
 	<input type="hidden" name="cisocial-login-action" value="save_settings"/>
+	<input type="hidden" name="redirect_to" value="<!--[--redirect to--]-->"/>
 	
 	<ul>
 		<li><input type="submit" value="Save Changes"/></li>
+		<li>Select login page
+			<select name="login-page">
+				<option></option>
+				<!--[--list pages--]-->
+			</select>
+		</li>
+		<li>
+			Select login redirect page
+			<select name="login-redirect">
+				<option></option>
+				<!--[--list pages--]-->
+			</select>
+		</li>
 		<li>GitHub Details
 			<ul>
 				<li><input type="text" name="cis-login-github-app-clientid" value="<!--[--github app clientid--]-->" id="github-app-clientid"><label for="github-app-clientid">GitHub Client ID</label></li>

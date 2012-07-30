@@ -123,4 +123,27 @@ if (!function_exists("rand_md5")) {
 	}
 
 }
+
+if (!function_exists("url_query_append")){
+	
+	/**
+	 * Append params to a url.
+	 * 
+	 * @param string $url The full url including current params.
+	 * @param array $vars Associative array of param name=>value pairs.
+	 * @return string 
+	 */
+	function url_query_append( $url, $vars=array()){
+		
+		//vars
+		$url = parse_url($url);
+		$query_vars = array();
+		parse_str($url['query'], $query_vars);
+		$query_vars = array_merge($query_vars, $vars);
+		
+		//build and return new string
+		return "{$url['scheme']}://{$url['host']}{$url['path']}"
+			. "?" . http_build_query($query_vars);
+	}
+}
 ?>

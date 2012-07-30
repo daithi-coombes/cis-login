@@ -38,6 +38,8 @@ class CISocialLoginWP {
 	 * Loads the html then sets shortcodes ( @see CISocialLogin::set_shortcodes() )
 	 * then loads scripts (@see CISocialLogin::load_scripts() ) and styles
 	 * (@see CISocialLogin::load_styles() ) then prints html
+	 * 
+	 * @global CISocialLoginClientGitHub $cis_login_client_github
 	 * @return void
 	 */
 	public function get_page() {
@@ -46,9 +48,11 @@ class CISocialLoginWP {
 		
 		$this->html = file_get_contents(CISOCIAL_LOGIN_DIR . "/public_html/CISocialLoginWP.php");
 		$this->shortcodes['errors'] = cis_login_get_errors();
+		$this->shortcodes['login form'] = $this->get_login_form();
 		$this->shortcodes['login form nonce'] = wp_create_nonce("login form nonce");
 		$this->shortcodes['git hub login link'] = $cis_login_client_github->get_login_link();
 		$this->shortcodes['messages'] = cis_login_get_messages();
+		
 		$this->set_shortcodes();
 
 		$this->load_scripts();
@@ -87,7 +91,8 @@ class CISocialLoginWP {
 	/**
 	 * login into wordpress normaly
 	 *
-	 * @todo
+	 * @deprecated
+	 * @todo build wordpress login form.
 	 * @global CISocialLoginClientGithub $cis_login_client_github
 	 * @return boolean 
 	 */
@@ -99,17 +104,40 @@ class CISocialLoginWP {
 			return false;
 		}
 		
-		cis_login_message ("Wordpress login");
+		(@$_REQUEST['remember']) ? $remember=true : $remember=false;
+		wp_signon(array(
+			'user_login' => $_REQUEST['user'],
+			'user_password' => $_REQUEST['pswd'],
+			$remember
+		));
 		
-		/**
-		 * @deprecated
-		 * git hub login
-		 *
-		global $cis_login_client_github;
-		if(@$_REQUEST['github_login'])
-			$cis_login_client_github->login();
-		//default wp login
-		else*/
+		wp_redirect("http://www.google.ie");
+	}
+	
+	/**
+	 * Returns html for login for. Uses wordpress's @see wp_login_form() to
+	 * build the form.
+	 *
+	 * @global CISocialLogin $cis_login
+	 * @return string 
+	 */
+	private function get_login_form(){
+		
+		//vars
+		global $cis_login;
+		$args = array(
+			'echo' => false,
+			'redirect' => 'http://cityindex.loc/?page_id=2',
+			'form_id' => 'cisocial-login'
+		);
+		
+		//build form
+		if($cis_login->settings['login-redirect'])
+			$args['redirect'] = $cis_login->settings['login-redirect'];
+		$form = wp_login_form($args);
+		
+		//return form
+		return $form;
 	}
 	
 	/**

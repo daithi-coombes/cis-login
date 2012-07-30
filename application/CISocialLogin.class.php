@@ -21,7 +21,7 @@ class CISocialLogin {
 	 * constructor
 	 */
 	public function __construct() {
-		
+				
 		//default params
 		$this->settings = $this->get_settings();
 		$this->shortcodes = array();
@@ -72,31 +72,14 @@ class CISocialLogin {
 		$this->shortcodes['messages'] = cis_login_get_messages();
 		$this->shortcodes['github app clientid'] = $settings['cis-login-github-app-clientid'];
 		$this->shortcodes['github app clientsecret'] = $settings['cis-login-github-app-clientsecret'];
+		$this->shortcodes['list pages'] = $this->get_page_list();
 		$this->shortcodes['settings form nonce'] = wp_create_nonce('settings form nonce');
 		
 		$this->set_shortcodes();
 		$this->load_scripts();
 		$this->load_styles();
-
+		
 		print $this->html;
-	}
-
-	/**
-	 * Loads javascript files
-	 * 
-	 * @return void 
-	 */
-	private function load_scripts() {
-		;
-	}
-
-	/**
-	 * Loads css files
-	 * 
-	 * @return void 
-	 */
-	private function load_styles() {
-		;
 	}
 
 	/**
@@ -116,15 +99,104 @@ class CISocialLogin {
 		
 		$settings = array();
 		
+		//parse 3rd party access keys
 		foreach($_REQUEST as $key=>$val)
 			if(preg_match("/cis-login-/", $key))
 				$settings[$key] = $val;
 		
+		//parse login settings
+		$settings['login-page'] = get_permalink($_REQUEST['login-page']);
+		if($_REQUEST['login-redirect']){
+			$settings['login-redirect'] = get_permalink($_REQUEST['login-redirect']); //$redirect->post_name;
+		}
+		
+		
 		update_option("cis_login_settings", $settings);
-			
+		
 		cis_login_message('Settings saved');
 		
 		return true;
+	}
+
+	/**
+	 * Filter callback to set the redirect after successfull login. 
+	 * 
+	 * @param string $redirect The redirect url
+	 * @param string $request The $_REQUEST global
+	 * @param string $user The user id
+	 * @return string 
+	 */
+	public function set_wp_login_redirect($redirect, $request, $user){
+		
+		if(!empty($this->settings['login-redirect']))
+			$redirect = $this->settings['login-redirect'];
+		return $redirect;
+	}
+
+	/**
+	 * Filter callback to set the logout url.
+	 *
+	 * @param string $logout_url
+	 * @return string 
+	 */
+	public function set_wp_logout_url($logout_url){
+		
+		//append logout var to login url
+		$logout_url = url_query_append($this->settings['login-page'], array(
+			'logout' => 1
+		));		
+	
+		//return;
+		return $logout_url;
+	}
+	
+	/**
+	 * Filter callback to change the login url in the wp core using filters. 
+	 * Defaults to wordpress's wp-login.php if no page is set in plugin 
+	 * settings.
+	 * 
+	 * @params array $default Wordpress default url is passed during callback.
+	 * @return string
+	 */
+	public function set_wp_login_url( $login_url, $redirect=false ){
+		
+		if(!empty($this->settings['login-page']))
+			$login_url = $this->settings['login-page'];
+		return $login_url;
+	}
+	
+	/**
+	 * Builds html list of &lt;option> tags for view file.
+	 * 
+	 * @return string
+	 */
+	private function get_page_list(){
+		
+		$pages = get_pages();
+		$html = "";
+		
+		foreach($pages as $page)
+			$html .= "<option value=\"{$page->ID}\">{$page->post_title}</option>\n";
+			
+		return $html;
+	}
+	
+	/**
+	 * Loads javascript files
+	 * 
+	 * @return void 
+	 */
+	private function load_scripts() {
+		;
+	}
+
+	/**
+	 * Loads css files
+	 * 
+	 * @return void 
+	 */
+	private function load_styles() {
+		;
 	}
 	
 	/**
