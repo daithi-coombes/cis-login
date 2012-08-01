@@ -48,6 +48,9 @@ add_filter('logout_url', array($cis_login,'set_wp_logout_url'), 10, 1);
 //shortcodes
 add_shortcode("CI Social Login", array(&$cis_login_wp, 'get_page'));
 
+//load global scripts
+$cis_login->register_global_scripts();
+
 /**
  * Add an error to the error que.
  * 

@@ -11,7 +11,7 @@
 <div id="header">
 	<div id="navLinks">
         
-                                                        
+                                    
                                                 	        [ <a href="../classtrees_cis-login.html">Class Tree: cis-login</a> ]
             [ <a href="../elementindex_cis-login.html">Index: cis-login</a> ]
         		[ <a href="../elementindex.html">All elements</a> ]		
@@ -24,9 +24,11 @@
 </div>
 
 <div id="nav" class="small">
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
 	<div id="packages">
 		Packages:
-					<p><a href="../li_default.html">default</a></p>
 					<p><a href="../li_cis-login.html">cis-login</a></p>
 					<p><a href="../li_david-coombes.html">david-coombes</a></p>
 			</div>
@@ -34,13 +36,11 @@
 				<div id="index">
 			<div id="files">
 								Files:<br>
-								<a href="../cis-login/_application---CISocialLogin.class.php.html">		CISocialLogin.class.php
+								<a href="../cis-login/_CISocialLogin.class.php.html">		CISocialLogin.class.php
 		</a><br>
-			<a href="../cis-login/_application---modules---CISocialLoginClientGitHub.class.php.html">		CISocialLoginClientGitHub.class.php
+			<a href="../cis-login/_modules---CISocialLoginClientGitHub.class.php.html">		CISocialLoginClientGitHub.class.php
 		</a><br>
-			<a href="../cis-login/_application---modules---CISocialLoginWP.class.php.html">		CISocialLoginWP.class.php
-		</a><br>
-			<a href="../cis-login/_index.php.html">		index.php
+			<a href="../cis-login/_modules---CISocialLoginWP.class.php.html">		CISocialLoginWP.class.php
 		</a><br>
 				</div>
 			<div id="interfaces">
@@ -59,7 +59,7 @@
 
 <div id="body">
 	    		<h1>Class: CISocialLogin</h1>
-	<p style="margin: 0px;">Source Location: /application/CISocialLogin.class.php</p>
+	<p style="margin: 0px;">Source Location: /CISocialLogin.class.php</p>
 	
 
 <div class="leftcol">
@@ -98,7 +98,11 @@
 				<li><a href="../cis-login/CISocialLogin.html#methodadmin_menu">admin_menu</a></li>
 				<li><a href="../cis-login/CISocialLogin.html#methodget_page">get_page</a></li>
 				<li><a href="../cis-login/CISocialLogin.html#methodget_settings">get_settings</a></li>
+				<li><a href="../cis-login/CISocialLogin.html#methodregister_global_scripts">register_global_scripts</a></li>
 				<li><a href="../cis-login/CISocialLogin.html#methodsave_settings">save_settings</a></li>
+				<li><a href="../cis-login/CISocialLogin.html#methodset_wp_login_redirect">set_wp_login_redirect</a></li>
+				<li><a href="../cis-login/CISocialLogin.html#methodset_wp_login_url">set_wp_login_url</a></li>
+				<li><a href="../cis-login/CISocialLogin.html#methodset_wp_logout_url">set_wp_logout_url</a></li>
 			</ul>
 </div>
 
@@ -242,6 +246,27 @@
 		</ul>
 	</div>
 	<p class="top">[ <a href="#top">Top</a> ]</p>
+	<a name="methodregister_global_scripts"></a>
+	<p></p>
+	<h3>register_global_scripts</h3>
+	<div class="indent">
+		<p>
+		<code>void register_global_scripts(
+)</code>
+		</p>
+	
+		<p class="linenumber">[line 87]</p>
+		<h4>Tags:</h4>
+<ul>
+	<li><b>access</b> - public</li>
+</ul>
+		
+	
+	<h4>Parameters:</h4>
+	<ul>
+		</ul>
+	</div>
+	<p class="top">[ <a href="#top">Top</a> ]</p>
 	<a name="methodsave_settings"></a>
 	<p></p>
 	<h3>save_settings</h3>
@@ -251,7 +276,7 @@
 )</code>
 		</p>
 	
-		<p class="linenumber">[line 109]</p>
+		<p class="linenumber">[line 101]</p>
 		<p align="center"><strong>Save settings in the dashboard page.
 </strong></p>
 <p>Settings saved as wp option &quot;cis_login_settings&quot;.</p><h4>Tags:</h4>
@@ -265,6 +290,111 @@
 		</ul>
 	</div>
 	<p class="top">[ <a href="#top">Top</a> ]</p>
+	<a name="methodset_wp_login_redirect"></a>
+	<p></p>
+	<h3>set_wp_login_redirect</h3>
+	<div class="indent">
+		<p>
+		<code>string set_wp_login_redirect(
+string
+$redirect, string
+$request, string
+$user)</code>
+		</p>
+	
+		<p class="linenumber">[line 138]</p>
+		<p align="center"><strong>Filter callback to set the redirect after successfull login.
+</strong></p>
+<h4>Tags:</h4>
+<ul>
+	<li><b>access</b> - public</li>
+</ul>
+		
+	
+	<h4>Parameters:</h4>
+	<ul>
+			<li>
+		<span class="type">string</span>
+		<b>$redirect</b> 
+		- 
+		The redirect url</li>
+			<li>
+		<span class="type">string</span>
+		<b>$request</b> 
+		- 
+		The $_REQUEST global</li>
+			<li>
+		<span class="type">string</span>
+		<b>$user</b> 
+		- 
+		The user id</li>
+		</ul>
+	</div>
+	<p class="top">[ <a href="#top">Top</a> ]</p>
+	<a name="methodset_wp_login_url"></a>
+	<p></p>
+	<h3>set_wp_login_url</h3>
+	<div class="indent">
+		<p>
+		<code>string set_wp_login_url(
+
+$login_url, [
+$redirect = false])</code>
+		</p>
+	
+		<p class="linenumber">[line 171]</p>
+		<p align="center"><strong>Filter callback to change the login url in the wp core using filters.
+</strong></p>
+<p>Defaults to wordpress's wp-login.php if no page is set in plugin  settings.</p><h4>Tags:</h4>
+<ul>
+	<li><b>access</b> - public</li>
+</ul>
+		
+	
+	<h4>Parameters:</h4>
+	<ul>
+			<li>
+		<span class="type"></span>
+		<b>$login_url</b> 
+		- 
+		</li>
+			<li>
+		<span class="type"></span>
+		<b>$redirect</b> 
+		- 
+		</li>
+		</ul>
+	</div>
+	<p class="top">[ <a href="#top">Top</a> ]</p>
+	<a name="methodset_wp_logout_url"></a>
+	<p></p>
+	<h3>set_wp_logout_url</h3>
+	<div class="indent">
+		<p>
+		<code>string set_wp_logout_url(
+string
+$logout_url)</code>
+		</p>
+	
+		<p class="linenumber">[line 151]</p>
+		<p align="center"><strong>Filter callback to set the logout url.
+</strong></p>
+<h4>Tags:</h4>
+<ul>
+	<li><b>access</b> - public</li>
+</ul>
+		
+	
+	<h4>Parameters:</h4>
+	<ul>
+			<li>
+		<span class="type">string</span>
+		<b>$logout_url</b> 
+		- 
+		</li>
+		</ul>
+	</div>
+	<p class="top">[ <a href="#top">Top</a> ]</p>
 
 	<hr>
 	<a name="class_consts"></a>
@@ -272,7 +402,7 @@
 	</div>
 	<div id="credit">
 		<hr>
-		Documentation generated on Fri, 27 Jul 2012 18:50:45 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
+		Documentation generated on Mon, 30 Jul 2012 13:26:38 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
 	</div>
 </div>
 </body>

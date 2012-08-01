@@ -69,10 +69,12 @@ class CISocialLogin {
 		
 		$this->html = file_get_contents( CISOCIAL_LOGIN_DIR . "/public_html/CISocialLogin.php");
 		$this->shortcodes['errors'] = cis_login_get_errors();
-		$this->shortcodes['messages'] = cis_login_get_messages();
 		$this->shortcodes['github app clientid'] = $settings['cis-login-github-app-clientid'];
 		$this->shortcodes['github app clientsecret'] = $settings['cis-login-github-app-clientsecret'];
-		$this->shortcodes['list pages'] = $this->get_page_list();
+		$this->shortcodes['images dir'] = CISOCIAL_LOGIN_URL . "/public_html/images/";
+		$this->shortcodes['list pages login-page'] = $this->get_page_list('login-page');
+		$this->shortcodes['list pages login-redirect'] = $this->get_page_list('login-redirect');
+		$this->shortcodes['messages'] = cis_login_get_messages();
 		$this->shortcodes['settings form nonce'] = wp_create_nonce('settings form nonce');
 		
 		$this->set_shortcodes();
@@ -82,6 +84,16 @@ class CISocialLogin {
 		print $this->html;
 	}
 
+	/**
+	 *  
+	 */
+	public function register_global_scripts(){
+		
+		wp_register_script('block-ui', CISOCIAL_LOGIN_URL . "/application/includes/jquery.blockUI.js", array(
+			'jquery'
+		));
+	}
+	
 	/**
 	 * Save settings in the dashboard page.
 	 * 
@@ -142,9 +154,10 @@ class CISocialLogin {
 	public function set_wp_logout_url($logout_url){
 		
 		//append logout var to login url
-		$logout_url = url_query_append($this->settings['login-page'], array(
-			'logout' => 1
-		));		
+		if(@$this->settings['login-page'])
+			$logout_url = url_query_append($this->settings['login-page'], array(
+				'cis_login_action' => 'logout'
+			));		
 	
 		//return;
 		return $logout_url;
@@ -170,13 +183,15 @@ class CISocialLogin {
 	 * 
 	 * @return string
 	 */
-	private function get_page_list(){
+	private function get_page_list( $for=false ){
 		
 		$pages = get_pages();
 		$html = "";
 		
-		foreach($pages as $page)
-			$html .= "<option value=\"{$page->ID}\">{$page->post_title}</option>\n";
+		foreach($pages as $page){
+			($page->guid==@$this->settings[$for]) ? $selected="selected" : $selected="";
+			$html .= "<option value=\"{$page->ID}\" $selected>{$page->post_title}</option>\n";
+		}
 			
 		return $html;
 	}
@@ -187,7 +202,16 @@ class CISocialLogin {
 	 * @return void 
 	 */
 	private function load_scripts() {
-		;
+		
+		wp_register_script('jquery-tipsy', CISOCIAL_LOGIN_URL . "/application/includes/jquery-tipsy/javascripts/jquery.tipsy.js", array(
+			'jquery'
+		));
+		wp_register_script('cis-login', CISOCIAL_LOGIN_URL . "/public_html/js/CISocialLogin.js", array(
+			'jquery',
+			'jquery-tipsy'
+		));
+		
+		wp_enqueue_script('cis-login');
 	}
 
 	/**
@@ -196,7 +220,9 @@ class CISocialLogin {
 	 * @return void 
 	 */
 	private function load_styles() {
-		;
+		wp_register_style('jquery-tipsy', CISOCIAL_LOGIN_URL . "/application/includes/jquery-tipsy/stylesheets/tipsy.css");
+		
+		wp_enqueue_style('jquery-tipsy');
 	}
 	
 	/**

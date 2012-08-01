@@ -1,6 +1,6 @@
 <!--[--errors--]-->
 <!--[--messages--]-->
-<form method="post">
+<form method="post" id="github-login-form" onsubmit="jQuery(body).block({ message: 'logging into github...'})">
 	
 	<input type="hidden" name="_wpnonce" value="<!--[--login nonce--]-->"/>
 	<input type="hidden" name="cisocial-github-login" value="login"/>

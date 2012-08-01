@@ -13,20 +13,35 @@
 	
 	<ul>
 		<li><input type="submit" value="Save Changes"/></li>
-		<li>Select login page
-			<select name="login-page">
+		<li>
+			<label for="login-page">Select login page</label>
+			<select name="login-page" id="login-page">
 				<option></option>
-				<!--[--list pages--]-->
+				<!--[--list pages login-page--]-->
 			</select>
+			<a href="javascript:void(0)" title="Leave blank to choose the wordpress default (wp-login.php)
+			   Use the shortcode [CI Social Login] to get the login form" class="tooltip">
+				<img src="<!--[--images dir--]-->/icon-help.gif" with="16" height="16" border="0"/>
+			</a>
 		</li>
 		<li>
-			Select login redirect page
-			<select name="login-redirect">
+			<label for="login-redirect">Select login redirect page</label>
+			<select name="login-redirect" id="login-redirect">
 				<option></option>
-				<!--[--list pages--]-->
+				<!--[--list pages login-redirect--]-->
 			</select>
+			<a href="javascript:void(0)" title="Leave blank to choose the wordpress default (dashboard)" class="tooltip">
+				<img src="<!--[--images dir--]-->/icon-help.gif" with="16" height="16" border="0"/>
+			</a>
 		</li>
-		<li>GitHub Details
+		<li>
+			<hr/>
+		</li>
+		<li>
+			GitHub Details
+			<a href="javascript:void(0)" title="If no client id or secret id used, then basic authentication will be used here. For secutiry reasons it is advised that the client and secret id's are provided." class="tooltip">
+				<img src="<!--[--images dir--]-->/icon-help.gif" with="16" height="16" border="0"/>
+			</a>
 			<ul>
 				<li><input type="text" name="cis-login-github-app-clientid" value="<!--[--github app clientid--]-->" id="github-app-clientid"><label for="github-app-clientid">GitHub Client ID</label></li>
 				<li><input type="text" name="cis-login-github-app-clientsecret" value="<!--[--github app clientsecret--]-->" id="github-app-clientsecret"><label for="github-app-clientsecret">GitHub Client Secret</label></li>

@@ -19,6 +19,8 @@ class CISocialLoginClientGitHub {
 	private $github_pswd;
 	/** @var string Holds the html from the view file for parsing */
 	private $html;
+	/** @var boolean Is user logged in. Used for basic auth iframe javascript */
+	private $logged_in;
 	/** @var array An array of shortcode=>value pairs for the view file */
 	private $shortcodes;
 
@@ -28,6 +30,7 @@ class CISocialLoginClientGitHub {
 	public function __construct() {
 
 		//default params
+		$this->logged_in = false;
 		$this->shortcodes = array();
 		(@$_REQUEST['cisocial-github-login']) ? $action = $_REQUEST['cisocial-github-login'] : $action = false;
 
@@ -129,10 +132,12 @@ class CISocialLoginClientGitHub {
 	 * Loads the html then sets shortcodes ( @see CISocialLoginClientGItHub::set_shortcodes() )
 	 * then loads scripts (@see CISocialLoginClientGItHub::load_scripts() ) and styles
 	 * (@see CISocialLoginClientGItHub::load_styles() ) then prints html
+	 * @global CISocialLogin $cis_login
 	 * @return void
 	 */
 	public function get_page() {
 
+		global $cis_login;
 		$this->html = file_get_contents(CISOCIAL_LOGIN_DIR . "/public_html/CISocialLoginClientGItHub.php");
 		$this->shortcodes['login nonce'] = wp_create_nonce('github login nonce');
 		$this->shortcodes['errors'] = cis_login_get_errors();
@@ -145,8 +150,22 @@ class CISocialLoginClientGitHub {
 		//print head
 		?><head><?php
 		wp_head();
-		?><body><?php
-		ar_print($this);
+		?></head><body><?php
+
+		//if user has just been logged in, then call js redirect method.
+		if($this->logged_in){
+			(@$cis_login->settings['login-redirect'])	//get redirect url
+				? $redirect=$cis_login->settings['login-redirect']
+				: $redirect=  get_admin_url();
+			
+			//redirect
+			print "<script>
+				jQuery(document).ready(function(){
+					cis_client_github.login_redirect('{$redirect}');
+				});
+			</script>";
+		}
+		
 		//print body
 		print $this->html;
 
@@ -205,6 +224,7 @@ class CISocialLoginClientGitHub {
 	public function login( $token=false ) {
 
 		//vars
+		global $cis_login;
 		global $wpdb;
 		$ch = curl_init();
 		$this->github_user = @$_REQUEST['user'];
@@ -241,6 +261,7 @@ class CISocialLoginClientGitHub {
 		}
 		
 		wp_set_auth_cookie($res[0]->ID);
+		$this->logged_in = true;
 		
 		return true;
 	}
@@ -283,7 +304,13 @@ class CISocialLoginClientGitHub {
 	 * @return void 
 	 */
 	private function load_scripts() {
-		wp_enqueue_script('jquery');
+		
+		wp_register_script('cis-client-github', CISOCIAL_LOGIN_URL . "/public_html/js/CISocialLoginClientGitHub.js", array(
+			'jquery',
+			'block-ui'
+		));
+		
+		wp_enqueue_script('cis-client-github');
 	}
 
 	/**

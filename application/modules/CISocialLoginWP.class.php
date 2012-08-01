@@ -22,14 +22,15 @@ class CISocialLoginWP {
 		
 		//set default params
 		$this->shortcodes = array();
+		$action = @$_REQUEST['cis_login_action'];
 		
 		//actions
 		add_action('wp_head', array(&$this, 'head'));
 		add_action('init', array(&$this,'init'));
 		add_action('wp_init', array(&$this,'init'));
 		
-		if(@$_REQUEST['cis_login_action']=='login') 
-			add_action('init', array(&$this, 'login'));
+		if(method_exists($this, @$action))
+			add_action('init', array(&$this, $action));
 	}
 
 	/**
@@ -50,6 +51,7 @@ class CISocialLoginWP {
 		$this->shortcodes['errors'] = cis_login_get_errors();
 		$this->shortcodes['login form'] = $this->get_login_form();
 		$this->shortcodes['login form nonce'] = wp_create_nonce("login form nonce");
+		$this->shortcodes['login redirect link'] = $this->get_login_redirect();
 		$this->shortcodes['git hub login link'] = $cis_login_client_github->get_login_link();
 		$this->shortcodes['messages'] = cis_login_get_messages();
 		
@@ -89,14 +91,16 @@ class CISocialLoginWP {
 	}
 	
 	/**
-	 * login into wordpress normaly
+	 * login into wordpress normaly.
 	 *
 	 * @deprecated
 	 * @todo build wordpress login form.
-	 * @global CISocialLoginClientGithub $cis_login_client_github
+	 * @global CISocialLogin $cis_login
 	 * @return boolean 
 	 */
 	public function login(){
+		
+		return false;
 		
 		//security check
 		if(!wp_verify_nonce($_REQUEST['_wpnonce'], "login form nonce")){
@@ -104,24 +108,36 @@ class CISocialLoginWP {
 			return false;
 		}
 		
+		global $cis_login;
+		
 		(@$_REQUEST['remember']) ? $remember=true : $remember=false;
 		wp_signon(array(
 			'user_login' => $_REQUEST['user'],
 			'user_password' => $_REQUEST['pswd'],
 			$remember
 		));
+	}
+	
+	/**
+	 * logout of wordpress.
+	 */
+	public function logout(){
 		
-		wp_redirect("http://www.google.ie");
+		wp_logout();
+		auth_redirect();
 	}
 	
 	/**
 	 * Returns html for login for. Uses wordpress's @see wp_login_form() to
 	 * build the form.
 	 *
+	 * @deprecated
 	 * @global CISocialLogin $cis_login
 	 * @return string 
 	 */
 	private function get_login_form(){
+		
+		return false;
 		
 		//vars
 		global $cis_login;
@@ -132,12 +148,21 @@ class CISocialLoginWP {
 		);
 		
 		//build form
-		if($cis_login->settings['login-redirect'])
+		if(@$cis_login->settings['login-redirect'])
 			$args['redirect'] = $cis_login->settings['login-redirect'];
 		$form = wp_login_form($args);
 		
 		//return form
 		return $form;
+	}
+	
+	private function get_login_redirect(){
+		
+		global $cis_login;
+		
+		if(@$cis_login->settings['login-redirect'])
+			return $cis_login->settings['login-redirect'];
+		else return "/wp-admin";
 	}
 	
 	/**
